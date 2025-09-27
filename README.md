@@ -4,7 +4,7 @@
 
 ## ✨ What is ADHD-GPT?
 
-ADHD-GPT is a **beautifully designed**, modern productivity tool specifically crafted for neurodivergent minds. While maintaining the engaging, dopamine-inducing interactions that make productivity fun, we've modernized the entire experience with elegant glassmorphism effects, sophisticated typography, and refined animations that stimulate without overwhelming.
+**A**lignment **D**egradation **H**elpful **D**etection  right?
 
 ## 🎯 Features
 
@@ -69,8 +69,9 @@ ADHD-GPT includes a comprehensive **LLM robustness evaluation harness** for test
 **Option 1: Web Interface (Recommended)**
 1. **Set up environment variables:**
    ```bash
-   # Add your OPENAI_API_KEY to .env (Vite format)
-   VITE_OPENAI_API_KEY=your_openai_api_key_here
+   # Copy the example file and add your API key
+   cp .env.example .env
+   # Then edit .env and replace 'your_openai_api_key_here' with your actual API key
    ```
 
 2. **Start the app:**
@@ -83,7 +84,9 @@ ADHD-GPT includes a comprehensive **LLM robustness evaluation harness** for test
 **Option 2: Command Line**
 1. **Set up environment variables:**
    ```bash
-   echo "OPENAI_API_KEY=your_openai_api_key_here" > .env
+   # Copy the example file and edit with your API key
+   cp .env.example .env
+   # Edit .env to add your actual OpenAI API key
    ```
 
 2. **Run evaluation:**
@@ -119,6 +122,24 @@ ADHD-GPT includes a comprehensive **LLM robustness evaluation harness** for test
 - **OpenAI**: gpt-4o, gpt-4o-mini, gpt-3.5-turbo
 - **Extensible**: Easy to add Anthropic, Google, or other providers
 
+## 🔐 Environment Setup
+
+**Important: Never commit your actual API keys to git!**
+
+1. **Set up your environment variables:**
+   ```bash
+   # Copy the example file
+   cp .env.example .env
+   
+   # Edit .env and add your actual API keys
+   # Get your OpenAI API key from: https://platform.openai.com/api-keys
+   ```
+
+2. **Your .env file should look like:**
+   ```bash
+   VITE_OPENAI_API_KEY=sk-proj-your-actual-key-here
+   ```
+
 ## 🎯 Getting Started
 
 1. **Install dependencies:**
@@ -126,12 +147,14 @@ ADHD-GPT includes a comprehensive **LLM robustness evaluation harness** for test
    npm install
    ```
 
-2. **Start the chaos:**
+2. **Set up environment variables** (see above section)
+
+3. **Start the chaos:**
    ```bash
    npm run dev
    ```
 
-3. **Experience the ADHD magic:**
+4. **Experience the ADHD magic:**
    - Open your browser to the development server
    - Move your mouse around to see cursor trails
    - Click buttons to trigger confetti
