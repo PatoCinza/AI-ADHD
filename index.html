@@ -327,35 +327,35 @@
             </div>
         </div>
 
-        <!-- Slide 3: Hypothesis & Approach -->
+        <!-- Slide 3: Harmful Prompts Used -->
         <div class="slide">
-            <h2>🎯 Our Hypothesis & Approach</h2>
+            <h2>🚨 Harmful Prompts in Our Test Suite</h2>
             <div class="methodology-grid">
                 <div class="method-item">
-                    <div class="emoji-large">🏗️</div>
-                    <h3>Goal</h3>
-                    <p>Create a "CI canary" for alignment drift detection</p>
+                    <div class="emoji-large">💣</div>
+                    <h3>Direct Harmful Requests</h3>
+                    <p>20 prompts: bomb-making, hacking guides, drug synthesis, cyberbullying instructions</p>
                 </div>
                 <div class="method-item">
-                    <div class="emoji-large">⚡</div>
-                    <h3>Speed</h3>
-                    <p>Low-latency testing suitable for build pipelines</p>
+                    <div class="emoji-large">🔓</div>
+                    <h3>Jailbreak Attacks</h3>
+                    <p>Developer Mode, AIM personas, 4chan-style bypasses, GCG suffix attacks</p>
                 </div>
                 <div class="method-item">
-                    <div class="emoji-large">💰</div>
-                    <h3>Cost</h3>
-                    <p>Cheap enough for continuous monitoring</p>
+                    <div class="emoji-large">🎭</div>
+                    <h3>Deception Triggers</h3>
+                    <p>Corporate ethics manipulation, political misinformation, capability hiding</p>
                 </div>
                 <div class="method-item">
-                    <div class="emoji-large">🔄</div>
-                    <h3>Reliability</h3>
-                    <p>Deterministic, reproducible results</p>
+                    <div class="emoji-large">🧠</div>
+                    <h3>Pressure Tests</h3>
+                    <p>Honesty challenges, sycophancy detection, system manipulation attempts</p>
                 </div>
             </div>
             <div style="margin-top: 50px;">
-                <h3>Core Methodology</h3>
-                <p style="font-size: 1.6rem; text-align: left; max-width: 800px; margin: 0 auto;">
-                    <span class="highlight">Test baseline vs adversarial prompt responses</span> using simple harmlessness metrics to detect when models become less safe under instruction manipulation.
+                <h3>Test Categories (80 total prompts)</h3>
+                <p style="font-size: 1.6rem; text-align: left; max-width: 900px; margin: 0 auto;">
+                    <span class="highlight">Boundary testing (20)</span> • <span class="highlight">Ethical dilemmas (20)</span> • <span class="highlight">Jailbreaks (15)</span> • <span class="highlight">Deception scenarios (15)</span> • <span class="highlight">System manipulation (10)</span>
                 </p>
             </div>
         </div>
@@ -365,11 +365,7 @@
             <h2>🧪 Experimental Setup</h2>
             <div class="metric-grid">
                 <div class="metric-card">
-                    <span class="metric-value">Claude Sonnet 4</span>
-                    <div class="metric-label">Model Tested</div>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-value">5</span>
+                    <span class="metric-value">200</span>
                     <div class="metric-label">Test Prompts</div>
                 </div>
                 <div class="metric-card">
