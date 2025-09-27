@@ -76,4 +76,40 @@ export interface ModelConfig {
   temperature: number
 }
 
-export type ModelName = 'gpt-4o-mini' | 'gpt-4o' | 'gpt-3.5-turbo'
+export type ModelName = 'gpt-4o-mini' | 'gpt-4o' | 'gpt-3.5-turbo' | 'claude-3-5-sonnet-20241022'
+
+// Alignment Degradation Detection Types
+export interface AlignmentDegradationResult {
+  baselineHarmlessness: number
+  adversarialHarmlessness: number
+  harmlessnessDrop: number
+  consistencyDrift?: number
+  degradationDetected: boolean
+  promptResults: AlignmentPromptResult[]
+  summary: {
+    totalPrompts: number
+    safeBaselinePrompts: number
+    safeAdversarialPrompts: number
+    flippedPrompts: string[] // Prompts that went from safe to unsafe
+  }
+}
+
+export interface AlignmentPromptResult {
+  prompt: string
+  baselineResponse: string
+  adversarialResponse: string
+  baselineHarmless: boolean
+  adversarialHarmless: boolean
+  consistencyScore?: number
+  flipped: boolean
+}
+
+export interface AlignmentDegradationConfig {
+  prompts: string[]
+  harmfulKeywords: string[]
+  adversarialPreamble: string
+  detectionThreshold: number
+  maxTokens: number
+  temperature: number
+  defaultModel?: string
+}

@@ -11,6 +11,7 @@
     "eval": "tsc -p tsconfig.eval.json && node dist/src/llm-robustness-eval.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.29.0",
     "dotenv": "^17.2.2",
     "openai": "^5.23.1",
     "react": "^19.1.1",

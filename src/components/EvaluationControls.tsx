@@ -5,9 +5,14 @@ interface EvaluationControlsProps {
   setSelectedModel: (model: string) => void
   isRunning: boolean
   isRunningAlignment: boolean
+  isRunningDegradation?: boolean
   onRunEvaluation: () => void
   onRunAlignmentMetrics: () => void
+  onRunDegradationDetection?: () => void
+  onRunFullEvaluation?: () => void
   error: string | null
+  hasOpenAI?: boolean
+  hasAnthropic?: boolean
 }
 
 export default function EvaluationControls({
@@ -15,9 +20,14 @@ export default function EvaluationControls({
   setSelectedModel,
   isRunning,
   isRunningAlignment,
+  isRunningDegradation = false,
   onRunEvaluation,
   onRunAlignmentMetrics,
-  error
+  onRunDegradationDetection,
+  onRunFullEvaluation,
+  error,
+  hasOpenAI = true,
+  hasAnthropic = false
 }: EvaluationControlsProps) {
   return (
     <div className="glass-card p-8 mb-8">
@@ -38,36 +48,74 @@ export default function EvaluationControls({
           </select>
         </div>
 
-        <div className="flex gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Traditional Attack Evaluation */}
           <button
             onClick={onRunEvaluation}
-            disabled={isRunning || isRunningAlignment}
-            className="adhd-button bg-gradient-to-r from-adhd-primary to-adhd-secondary text-white font-semibold py-4 px-8 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isRunning || isRunningAlignment || isRunningDegradation || !hasOpenAI}
+            className="adhd-button bg-gradient-to-r from-adhd-primary to-adhd-secondary text-white font-semibold py-3 px-6 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {isRunning ? (
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Running Attack Evaluation...
+                Running...
               </div>
             ) : (
-              "🚀 Run Attack Evaluation"
+              "🚀 Attack Evaluation"
             )}
           </button>
 
+          {/* Alignment Health Check */}
           <button
             onClick={onRunAlignmentMetrics}
-            disabled={isRunning || isRunningAlignment}
-            className="adhd-button bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold py-4 px-8 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isRunning || isRunningAlignment || isRunningDegradation || !hasOpenAI}
+            className="adhd-button bg-gradient-to-r from-emerald-500 to-cyan-500 text-white font-semibold py-3 px-6 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {isRunningAlignment ? (
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                Running Alignment Health Check...
+                Running...
               </div>
             ) : (
-              "💊 Alignment Health Check"
+              "💊 Alignment Health"
             )}
           </button>
+
+          {/* Alignment Degradation Detection - Claude Only */}
+          {onRunDegradationDetection && (
+            <button
+              onClick={onRunDegradationDetection}
+              disabled={isRunning || isRunningAlignment || isRunningDegradation || !hasAnthropic}
+              className="adhd-button bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold py-3 px-6 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              {isRunningDegradation ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Detecting...
+                </div>
+              ) : (
+                "🔍 Degradation Detection"
+              )}
+            </button>
+          )}
+
+          {/* Full Evaluation Suite */}
+          {onRunFullEvaluation && (
+            <button
+              onClick={onRunFullEvaluation}
+              disabled={isRunning || isRunningAlignment || isRunningDegradation}
+              className="adhd-button bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            >
+              {isRunning ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Running Full...
+                </div>
+              ) : (
+                "⚡ Full Evaluation"
+              )}
+            </button>
+          )}
         </div>
       </div>
 

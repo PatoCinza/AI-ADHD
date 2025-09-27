@@ -1,19 +1,24 @@
 import type { LLMRobustnessEvalProps, EvaluationStats } from './types'
 import { isApiKeyAvailable, getApiKeyStatus } from './services'
+import { isAnthropicApiKeyAvailable } from './cli/anthropic-client'
 import { useEvaluation } from './hooks'
-import { EvaluationControls, AlignmentDashboard, AttackResults } from './components'
+import { EvaluationControls, AlignmentDashboard, AttackResults, AlignmentDegradationResults } from './components'
 
 export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: LLMRobustnessEvalProps) {
   const {
     isRunning,
     isRunningAlignment,
+    isRunningDegradation,
     results,
     alignmentMetrics,
+    degradationResults,
     selectedModel,
     setSelectedModel,
     error,
     handleRunEvaluation,
-    handleRunAlignmentMetrics
+    handleRunAlignmentMetrics,
+    handleRunDegradationDetection,
+    handleRunFullEvaluation
   } = useEvaluation()
 
   const calculateStats = (): EvaluationStats | null => {
@@ -43,8 +48,12 @@ export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: L
     onAlignmentComplete(alignmentMetrics)
   }
 
-  // Simple render first to test
-  if (!isApiKeyAvailable()) {
+  // Check API key availability
+  const hasOpenAI = isApiKeyAvailable()
+  const hasAnthropic = isAnthropicApiKeyAvailable()
+  const isClaudeModel = selectedModel.includes('claude')
+  
+  if (!hasOpenAI && !hasAnthropic) {
     return (
       <div className="py-20 px-6 bg-blue-900">
         <div className="max-w-7xl mx-auto text-center">
@@ -52,8 +61,29 @@ export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: L
             🔬 LLM Robustness Evaluation
           </h2>
           <div className="p-8 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
-            <p>OpenAI API key not found. Please set VITE_OPENAI_API_KEY in your .env file.</p>
-            <p className="mt-2 text-sm">Current value: {getApiKeyStatus()}</p>
+            <p>API keys not found. Please set at least one of:</p>
+            <ul className="mt-2 text-sm">
+              <li>VITE_OPENAI_API_KEY for OpenAI models</li>
+              <li>VITE_ANTHROPIC_API_KEY for Claude models</li>
+            </ul>
+            <p className="mt-2 text-sm">OpenAI Status: {getApiKeyStatus()}</p>
+            <p className="text-sm">Anthropic Status: {hasAnthropic ? 'Available' : 'Not found'}</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  
+  if (isClaudeModel && !hasAnthropic) {
+    return (
+      <div className="py-20 px-6 bg-blue-900">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            🔬 LLM Robustness Evaluation
+          </h2>
+          <div className="p-8 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200">
+            <p>Anthropic API key required for Claude models.</p>
+            <p className="mt-2 text-sm">Please set VITE_ANTHROPIC_API_KEY in your .env file.</p>
           </div>
         </div>
       </div>
@@ -68,7 +98,7 @@ export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: L
             🔬 <span style={{background: 'linear-gradient(45deg, #8b5cf6, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>LLM Robustness</span> Evaluation
           </h2>
           <p className="text-xl text-white opacity-70 max-w-2xl mx-auto">
-            Test various attack vectors and prompt injection techniques on language models
+            Test various attack vectors, prompt injection techniques, and alignment degradation detection
           </p>
         </div>
 
@@ -78,10 +108,22 @@ export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: L
           setSelectedModel={setSelectedModel}
           isRunning={isRunning}
           isRunningAlignment={isRunningAlignment}
+          isRunningDegradation={isRunningDegradation}
           onRunEvaluation={handleRunEvaluation}
           onRunAlignmentMetrics={handleRunAlignmentMetrics}
+          onRunDegradationDetection={handleRunDegradationDetection}
+          onRunFullEvaluation={handleRunFullEvaluation}
           error={error}
+          hasOpenAI={hasOpenAI}
+          hasAnthropic={hasAnthropic}
         />
+
+        {/* Alignment Degradation Results */}
+        {degradationResults && (
+          <div className="mb-8">
+            <AlignmentDegradationResults result={degradationResults} />
+          </div>
+        )}
 
         {/* Alignment Metrics Dashboard */}
         {alignmentMetrics && (
