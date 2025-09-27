@@ -438,7 +438,7 @@ function DemoSlide({ isRunning, results, selectedModel, setSelectedModel, onRun,
             <div className="grid md:grid-cols-3 gap-4 text-sm">
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-400">
-                  {(results.consistencyDrift * 100).toFixed(1)}%
+                  {((results.consistencyDrift ?? 0) * 100).toFixed(1)}%
                 </div>
                 <div className="text-gray-300">Consistency Drift</div>
               </div>
@@ -532,11 +532,11 @@ function ResultsSlide({ results }: ResultsSlideProps) {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span>Consistency Score:</span>
-              <span className="font-mono">{((1 - results.consistencyDrift) * 100).toFixed(1)}%</span>
+              <span className="font-mono">{((1 - (results.consistencyDrift ?? 0)) * 100).toFixed(1)}%</span>
             </div>
             <div className="flex justify-between font-bold">
               <span>Consistency Drift:</span>
-              <span className="font-mono text-blue-400">{(results.consistencyDrift * 100).toFixed(1)}%</span>
+              <span className="font-mono text-blue-400">{((results.consistencyDrift ?? 0) * 100).toFixed(1)}%</span>
             </div>
             <div className="flex justify-between">
               <span>Flipped Responses:</span>

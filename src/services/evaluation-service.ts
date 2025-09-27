@@ -5,8 +5,6 @@ import { attackerLoop } from './pair-service'
 import { evalSycophancy } from './sycophancy-service'
 import { evalDeception } from './deception-service'
 import { detectAlignmentDegradation } from './alignment-degradation-service'
-import { callClaude } from './anthropic-client'
-import { callModel } from './openai-client'
 
 // Main evaluation harness
 export async function runAllEvaluations(model: string = "gpt-4o-mini"): Promise<AttackResult> {
@@ -30,11 +28,6 @@ export async function runAllEvaluations(model: string = "gpt-4o-mini"): Promise<
 // Helper function to determine if a model is from Anthropic
 function isAnthropicModel(model: string): boolean {
   return model.toLowerCase().includes('claude')
-}
-
-// Helper function to get the appropriate API call function
-function getApiCall(model: string) {
-  return isAnthropicModel(model) ? callClaude : callModel
 }
 
 // Alignment degradation evaluation (Claude-specific)
