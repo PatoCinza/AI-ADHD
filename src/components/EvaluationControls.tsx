@@ -40,19 +40,36 @@ export default function EvaluationControls({
             className="bg-white/10 text-white px-4 py-2 rounded-lg border border-white/20 focus:border-adhd-primary focus:outline-none"
             disabled={isRunning}
           >
-            {MODEL_OPTIONS.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
+            {MODEL_OPTIONS.map(option => {
+              const isClaudeModel = option.value.includes('claude')
+              const isDisabled = (isClaudeModel && !hasAnthropic) || (!isClaudeModel && !hasOpenAI)
+              return (
+                <option key={option.value} value={option.value} disabled={isDisabled}>
+                  {option.label} {isDisabled ? '(API key required)' : ''}
+                </option>
+              )
+            })}
           </select>
+          
+          {/* API Key Status Indicators */}
+          <div className="flex gap-3 text-xs text-white/70">
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full ${hasOpenAI ? 'bg-green-400' : 'bg-red-400'}`}></div>
+              OpenAI {hasOpenAI ? 'Ready' : 'Missing'}
+            </div>
+            <div className="flex items-center gap-1">
+              <div className={`w-2 h-2 rounded-full ${hasAnthropic ? 'bg-green-400' : 'bg-red-400'}`}></div>
+              Anthropic {hasAnthropic ? 'Ready' : 'Missing'}
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Traditional Attack Evaluation */}
           <button
             onClick={onRunEvaluation}
-            disabled={isRunning || isRunningAlignment || isRunningDegradation || !hasOpenAI}
+            disabled={isRunning || isRunningAlignment || isRunningDegradation || 
+              (selectedModel.includes('claude') ? !hasAnthropic : !hasOpenAI)}
             className="adhd-button bg-gradient-to-r from-adhd-primary to-adhd-secondary text-white font-semibold py-3 px-6 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {isRunning ? (
@@ -65,7 +82,7 @@ export default function EvaluationControls({
             )}
           </button>
 
-          {/* Alignment Health Check */}
+          {/* Alignment Health Check - OpenAI only for now */}
           <button
             onClick={onRunAlignmentMetrics}
             disabled={isRunning || isRunningAlignment || isRunningDegradation || !hasOpenAI}
@@ -81,11 +98,12 @@ export default function EvaluationControls({
             )}
           </button>
 
-          {/* Alignment Degradation Detection - Claude Only */}
+          {/* Alignment Degradation Detection - Works with both providers */}
           {onRunDegradationDetection && (
             <button
               onClick={onRunDegradationDetection}
-              disabled={isRunning || isRunningAlignment || isRunningDegradation || !hasAnthropic}
+              disabled={isRunning || isRunningAlignment || isRunningDegradation || 
+                (selectedModel.includes('claude') ? !hasAnthropic : !hasOpenAI)}
               className="adhd-button bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold py-3 px-6 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {isRunningDegradation ? (
@@ -99,11 +117,12 @@ export default function EvaluationControls({
             </button>
           )}
 
-          {/* Full Evaluation Suite */}
+          {/* Full Evaluation Suite - Works with both providers */}
           {onRunFullEvaluation && (
             <button
               onClick={onRunFullEvaluation}
-              disabled={isRunning || isRunningAlignment || isRunningDegradation}
+              disabled={isRunning || isRunningAlignment || isRunningDegradation ||
+                (selectedModel.includes('claude') ? !hasAnthropic : !hasOpenAI)}
               className="adhd-button bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold py-3 px-6 rounded-xl focus-ring disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {isRunning ? (

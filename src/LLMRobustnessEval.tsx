@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import type { LLMRobustnessEvalProps, EvaluationStats } from './types'
 import { isApiKeyAvailable, getApiKeyStatus } from './services'
-import { isAnthropicApiKeyAvailable } from './cli/anthropic-client'
+import { isAnthropicApiKeyAvailable } from './services/anthropic-client'
 import { useEvaluation } from './hooks'
 import { EvaluationControls, AlignmentDashboard, AttackResults, AlignmentDegradationResults } from './components'
+import PresentationMode from './components/PresentationMode'
 
 export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: LLMRobustnessEvalProps) {
+  const [isPresentationMode, setIsPresentationMode] = useState(false)
   const {
     isRunning,
     isRunningAlignment,
@@ -46,6 +49,11 @@ export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: L
   
   if (alignmentMetrics && onAlignmentComplete) {
     onAlignmentComplete(alignmentMetrics)
+  }
+
+  // Return presentation mode if active
+  if (isPresentationMode) {
+    return <PresentationMode onExit={() => setIsPresentationMode(false)} />
   }
 
   // Check API key availability
@@ -94,6 +102,16 @@ export default function LLMRobustnessEval({ onComplete, onAlignmentComplete }: L
     <div className="py-20 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setIsPresentationMode(true)}
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 
+                       rounded-lg text-white font-medium transition-all flex items-center space-x-2"
+            >
+              <span>📽️</span>
+              <span>Presentation Mode</span>
+            </button>
+          </div>
           <h2 className="text-4xl md:text-6xl font-bold text-white mb-4">
             🔬 <span style={{background: 'linear-gradient(45deg, #8b5cf6, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>LLM Robustness</span> Evaluation
           </h2>

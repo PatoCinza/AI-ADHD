@@ -1,9 +1,13 @@
 import { useState } from 'react'
 import type { AttackResult, AlignmentMetrics, AlignmentDegradationResult } from '../types'
-import { runAllEvaluations, evaluateAlignmentMetrics, isApiKeyAvailable } from '../services'
-import { isAnthropicApiKeyAvailable } from '../cli/anthropic-client'
-import { detectAlignmentDegradation } from '../cli/alignment-degradation-service'
-import { runAlignmentDegradationEvaluation } from '../services/evaluation-service'
+import { 
+  runAllEvaluations, 
+  runUniversalEvaluation,
+  evaluateAlignmentMetrics, 
+  isApiKeyAvailable
+} from '../services'
+import { isAnthropicApiKeyAvailable } from '../services/anthropic-client'
+import { detectAlignmentDegradation } from '../services/alignment-degradation-service'
 
 export function useEvaluation() {
   const [isRunning, setIsRunning] = useState(false)
@@ -16,7 +20,14 @@ export function useEvaluation() {
   const [error, setError] = useState<string | null>(null)
 
   const handleRunEvaluation = async () => {
-    if (!isApiKeyAvailable()) {
+    const isClaudeModel = selectedModel.includes('claude')
+    
+    if (isClaudeModel && !isAnthropicApiKeyAvailable()) {
+      setError("Anthropic API key not found. Please set VITE_ANTHROPIC_API_KEY in your .env file.")
+      return
+    }
+    
+    if (!isClaudeModel && !isApiKeyAvailable()) {
       setError("OpenAI API key not found. Please set VITE_OPENAI_API_KEY in your .env file.")
       return
     }
@@ -56,8 +67,15 @@ export function useEvaluation() {
   }
 
   const handleRunDegradationDetection = async () => {
-    if (!isAnthropicApiKeyAvailable()) {
+    const isClaudeModel = selectedModel.includes('claude')
+    
+    if (isClaudeModel && !isAnthropicApiKeyAvailable()) {
       setError("Anthropic API key not found. Please set VITE_ANTHROPIC_API_KEY in your .env file.")
+      return
+    }
+    
+    if (!isClaudeModel && !isApiKeyAvailable()) {
+      setError("OpenAI API key not found. Please set VITE_OPENAI_API_KEY in your .env file.")
       return
     }
 
@@ -67,7 +85,7 @@ export function useEvaluation() {
 
     try {
       const degradationResult = await detectAlignmentDegradation({
-        defaultModel: selectedModel.includes('claude') ? selectedModel : "claude-3-5-sonnet-20241022"
+        defaultModel: selectedModel
       })
       setDegradationResults(degradationResult)
     } catch (err) {
@@ -78,15 +96,14 @@ export function useEvaluation() {
   }
 
   const handleRunFullEvaluation = async () => {
-    // Check if we should use Claude models
-    const useClaudeModel = selectedModel.includes('claude')
+    const isClaudeModel = selectedModel.includes('claude')
     
-    if (useClaudeModel && !isAnthropicApiKeyAvailable()) {
+    if (isClaudeModel && !isAnthropicApiKeyAvailable()) {
       setError("Anthropic API key not found. Please set VITE_ANTHROPIC_API_KEY in your .env file.")
       return
     }
     
-    if (!useClaudeModel && !isApiKeyAvailable()) {
+    if (!isClaudeModel && !isApiKeyAvailable()) {
       setError("OpenAI API key not found. Please set VITE_OPENAI_API_KEY in your .env file.")
       return
     }
@@ -96,9 +113,7 @@ export function useEvaluation() {
     setResults(null)
 
     try {
-      const evalResults = useClaudeModel 
-        ? await runAlignmentDegradationEvaluation(selectedModel)
-        : await runAllEvaluations(selectedModel)
+      const evalResults = await runUniversalEvaluation(selectedModel)
       setResults(evalResults)
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred during evaluation")

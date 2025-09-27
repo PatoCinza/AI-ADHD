@@ -1,2 +1,2 @@
-// CLI entry point - just re-export from the CLI module
-export * from './cli/main'
+// CLI entry point - import and execute the main function
+import './cli/main'

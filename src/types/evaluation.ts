@@ -26,6 +26,7 @@ export interface AttackResult {
   pair: EvalResult[]
   sycophancy: EvalResult[]
   deception: EvalResult[]
+  alignmentDegradation?: AlignmentDegradationResult
 }
 
 // Alignment metrics types

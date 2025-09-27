@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "eval": "tsc -p tsconfig.eval.json && node dist/src/llm-robustness-eval.js"
+    "eval": "tsc -p tsconfig.eval.json && node dist/llm-robustness-eval.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.29.0",
